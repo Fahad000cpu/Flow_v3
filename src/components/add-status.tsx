@@ -66,7 +66,7 @@ export function AddStatus() {
 
   const form = useForm<StatusFormValues>({
     resolver: zodResolver(statusFormSchema),
-    defaultValues: { type: "image", youtubeLink: "" }
+    defaultValues: { type: "image" }
   });
   
   const youtubeLinkValue = form.watch('youtubeLink');
@@ -201,10 +201,17 @@ export function AddStatus() {
     const newType = value as 'image' | 'video' | 'youtube';
     setActiveTab(newType);
     
-    form.reset({
-      type: newType,
-      youtubeLink: "",
-    });
+    if (newType === 'youtube') {
+        form.reset({
+            type: newType,
+            youtubeLink: "",
+        });
+    } else {
+        form.reset({
+            type: newType,
+            file: new DataTransfer().files
+        });
+    }
     resetPreview();
   };
 
