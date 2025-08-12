@@ -1,4 +1,3 @@
-
 // src/components/status-viewer.tsx
 "use client";
 
