@@ -32,7 +32,8 @@ const settingsFormSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
-type GroupData = {
+type Group = {
+  id: string;
   groupName: string;
   groupIconUrl: string;
   members: string[];
@@ -41,8 +42,6 @@ type GroupData = {
     adminOnlyMessages: boolean;
   }
 };
-
-type Group = GroupData & { id: string };
 
 type Message = {
     id: string;
@@ -81,8 +80,15 @@ export default function GroupChatPage({ params }: { params: { id: string } }) {
         const groupRef = doc(db, 'groups', groupId);
         const groupSnap = await getDoc(groupRef);
         if (groupSnap.exists()) {
-          const groupData = groupSnap.data() as GroupData;
-          setGroup({ id: groupSnap.id, ...groupData });
+          const groupData = groupSnap.data();
+          setGroup({
+            id: groupSnap.id,
+            groupName: groupData.groupName,
+            groupIconUrl: groupData.groupIconUrl,
+            members: groupData.members,
+            createdBy: groupData.createdBy,
+            settings: groupData.settings,
+           });
           form.reset({
               groupName: groupData.groupName,
               adminOnlyMessages: groupData.settings?.adminOnlyMessages || false,
@@ -429,7 +435,7 @@ export default function GroupChatPage({ params }: { params: { id: string } }) {
                                 <FormLabel>Group Icon</FormLabel>
                                 <div className="flex items-center gap-4">
                                      <Avatar className="h-16 w-16">
-                                        <AvatarImage src={iconPreview || group.groupIconUrl} alt="Group Icon"/>
+                                        <AvatarImage src={iconPreview || group?.groupIconUrl} alt="Group Icon"/>
                                         <AvatarFallback><Users/></AvatarFallback>
                                     </Avatar>
                                     <Button type="button" variant="outline" onClick={() => document.getElementById('group-icon-upload')?.click()}>
