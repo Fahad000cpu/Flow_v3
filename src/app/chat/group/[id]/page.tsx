@@ -32,8 +32,7 @@ const settingsFormSchema = z.object({
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
-type Group = {
-  id: string;
+type GroupData = {
   groupName: string;
   groupIconUrl: string;
   members: string[];
@@ -42,6 +41,8 @@ type Group = {
     adminOnlyMessages: boolean;
   }
 };
+
+type Group = GroupData & { id: string };
 
 type Message = {
     id: string;
@@ -80,7 +81,7 @@ export default function GroupChatPage({ params }: { params: { id: string } }) {
         const groupRef = doc(db, 'groups', groupId);
         const groupSnap = await getDoc(groupRef);
         if (groupSnap.exists()) {
-          const groupData = groupSnap.data() as Group;
+          const groupData = groupSnap.data() as GroupData;
           setGroup({ id: groupSnap.id, ...groupData });
           form.reset({
               groupName: groupData.groupName,
