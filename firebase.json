@@ -17,10 +17,5 @@
   },
   "dataconnect": {
     "source": "dataconnect"
-  },
-  "apphosting": {
-    "source": ".",
-    "region": "us-central1",
-    "project": "linkshare-g906j"
   }
 }
